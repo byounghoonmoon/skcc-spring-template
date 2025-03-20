@@ -64,7 +64,7 @@ public class MenuService implements MenuServicePort {
         Menu target = Menu.updateMenu(param, dbData);
 
         // 순서를 입력받았을때
-        if(param.getMenuOrder() > 0) {
+        if (param.getMenuOrder() > 0) {
             // 형제 순서 업데이트
             menuRepositoryPort.updateSiblingsMenuOrder(target.getParentId(), param.getId(), target.getMenuOrder());
         }
@@ -74,8 +74,23 @@ public class MenuService implements MenuServicePort {
     }
 
     @Override
-    public List<Menu> getRootMenuList() {
+    public List<Menu> getRootMenuList(boolean dbSelect) {
+        if (dbSelect) {
+            Map<Long, Menu> dbMenu = menuRepositoryPort.loadCacheData();
+            return new ArrayList<>(dbMenu.values());
+        }
+
         Map<Long, Menu> cacheMenu = (Map<Long, Menu>) myCacheService.get(CacheGroup.MENU, "ROOT", Map.class);
-        return new ArrayList<>(cacheMenu.values());
+        ArrayList<Menu> menus = new ArrayList<>(cacheMenu.values());
+        if (menus.isEmpty()) {
+            Map<Long, Menu> dbMenu = menuRepositoryPort.loadCacheData();
+            if (dbMenu.isEmpty()) {
+                return new ArrayList<>();
+            }
+            // 데이터가 있으면 캐시데이터 추가
+            myCacheService.put(CacheGroup.MENU, "ROOT", dbMenu);
+            return new ArrayList<>(dbMenu.values());
+        }
+        return menus;
     }
 }

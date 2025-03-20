@@ -52,9 +52,9 @@ public class MenuController {
     }
 
     @GetMapping("/root")
-    public ApiResponse<List<MenuResponse>> getRootMenuList() {
+    public ApiResponse<List<MenuResponse>> getRootMenuList(@RequestParam(required = false, defaultValue = "false") boolean dbSelect) {
         return ApiResponse.ok(
-                menuServicePort.getRootMenuList()
+                menuServicePort.getRootMenuList(dbSelect)
                         .stream()
                         .map(MenuResponse::from)
                         .toList()

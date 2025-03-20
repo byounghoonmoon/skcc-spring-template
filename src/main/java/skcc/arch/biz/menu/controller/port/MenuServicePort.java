@@ -12,5 +12,5 @@ public interface MenuServicePort {
     Page<Menu> findByCondition(Pageable pageable, Menu menu);
     Menu findByMenuId(Long menuId);
     Menu update(Menu menu);
-    List<Menu> getRootMenuList();
+    List<Menu> getRootMenuList(boolean dbSelect);
 }
