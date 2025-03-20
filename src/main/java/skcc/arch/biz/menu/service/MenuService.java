@@ -75,22 +75,27 @@ public class MenuService implements MenuServicePort {
 
     @Override
     public List<Menu> getRootMenuList(boolean dbSelect) {
+
+        // 1. DB 조회 요청일 경우
         if (dbSelect) {
             Map<Long, Menu> dbMenu = menuRepositoryPort.loadCacheData();
             return new ArrayList<>(dbMenu.values());
         }
 
+        // 2. 캐시 조회
         Map<Long, Menu> cacheMenu = (Map<Long, Menu>) myCacheService.get(CacheGroup.MENU, "ROOT", Map.class);
-        ArrayList<Menu> menus = new ArrayList<>(cacheMenu.values());
-        if (menus.isEmpty()) {
+        // 2-1. 캐시 데이터가 없을 경우
+        if (cacheMenu.isEmpty()) {
+            // 2-1-1. DB 조회
             Map<Long, Menu> dbMenu = menuRepositoryPort.loadCacheData();
             if (dbMenu.isEmpty()) {
                 return new ArrayList<>();
             }
-            // 데이터가 있으면 캐시데이터 추가
+            // 2-1-2. 데이터가 있으면 캐시데이터 추가후 반환
             myCacheService.put(CacheGroup.MENU, "ROOT", dbMenu);
             return new ArrayList<>(dbMenu.values());
         }
-        return menus;
+        // 2-2. 캐시 데이터 반환
+        return new ArrayList<>(cacheMenu.values());
     }
 }
