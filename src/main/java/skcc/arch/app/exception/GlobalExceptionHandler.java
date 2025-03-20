@@ -41,6 +41,7 @@ public class GlobalExceptionHandler {
     // 기본 예외
     @ExceptionHandler(value = {Exception.class})
     public ApiResponse<?> handleException(Exception e) {
+        e.printStackTrace();
         return ApiResponse.fail(e);
     }
 }

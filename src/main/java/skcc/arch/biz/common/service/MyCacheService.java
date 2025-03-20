@@ -12,8 +12,11 @@ import skcc.arch.app.cache.RedisCacheService;
 import skcc.arch.biz.code.domain.Code;
 import skcc.arch.biz.code.service.port.CodeRepositoryPort;
 import skcc.arch.biz.common.constants.CacheGroup;
+import skcc.arch.biz.menu.domain.Menu;
+import skcc.arch.biz.menu.service.port.MenuRepositoryPort;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -23,6 +26,7 @@ public class MyCacheService {
     public static final String DELIMITER = ":";
     private final CacheService cacheService;
     private final CodeRepositoryPort codeRepositoryPort;
+    private final MenuRepositoryPort menuRepositoryPort;
 
     @Transactional
     @EventListener(ApplicationReadyEvent.class)
@@ -109,6 +113,11 @@ public class MyCacheService {
                 this.put(CacheGroup.CODE, code.getCode(), nodes);
             }
         }
+
+        // 최상위 메뉴 캐시 적재
+        Map<Long, Menu> menuMap = menuRepositoryPort.loadCacheData();
+        this.put(CacheGroup.MENU, "ROOT", menuMap);
+
     }
 
 }

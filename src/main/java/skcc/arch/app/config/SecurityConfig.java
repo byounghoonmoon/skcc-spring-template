@@ -32,6 +32,7 @@ public class SecurityConfig {
     private final AntPathMatcher antPathMatcher = new AntPathMatcher();
     private final JwtUtil jwtUtil;
     private static final String[] AUTH_WHITELIST = {
+            "/**",
             // FIXME - 타임리프(추후제거)
             "/","/login", "/register",
             // FIXME - 정적파일(추후제건
