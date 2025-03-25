@@ -15,14 +15,14 @@ public abstract class RoleConditionBuilder {
         }
 
         return builder
-                .and(idLike(condition.getRoleId()))
+                .and(roleIdLike(condition.getRoleId()))
                 .and(nameLike(condition.getName()))
                 .and(alwaysTrue())
                 ;
     }
 
-    private static BooleanExpression idLike(String roleId) {
-        return hasText(roleId) ? roleEntity.name.like("%" + roleId + "%") : null;
+    private static BooleanExpression roleIdLike(String roleId) {
+        return hasText(roleId) ? roleEntity.roleId.like("%" + roleId + "%") : null;
     }
 
     private static BooleanExpression nameLike(String name) {

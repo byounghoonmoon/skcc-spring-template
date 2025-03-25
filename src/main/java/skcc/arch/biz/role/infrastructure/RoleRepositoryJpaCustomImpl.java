@@ -7,9 +7,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
-import skcc.arch.biz.menu.domain.Menu;
-import skcc.arch.biz.menu.infrastructure.jpa.MenuConditionBuilder;
-import skcc.arch.biz.menu.infrastructure.jpa.MenuEntity;
 import skcc.arch.biz.role.domain.Role;
 import skcc.arch.biz.role.infrastructure.jpa.RoleCondition;
 import skcc.arch.biz.role.infrastructure.jpa.RoleConditionBuilder;
@@ -20,7 +17,6 @@ import skcc.arch.biz.role.service.port.RoleRepositoryPort;
 import java.util.List;
 import java.util.Optional;
 
-import static skcc.arch.biz.menu.infrastructure.jpa.QMenuEntity.menuEntity;
 import static skcc.arch.biz.role.infrastructure.jpa.QRoleEntity.roleEntity;
 
 @Repository
@@ -66,5 +62,18 @@ public class RoleRepositoryJpaCustomImpl implements RoleRepositoryPort {
     @Override
     public Role update(Role Role) {
         return null;
+    }
+
+    @Override
+    public Optional<Role> findByRoleId(String roleId) {
+
+        RoleEntity result = queryFactory.selectFrom(roleEntity)
+                .where(roleEntity.roleId.eq(roleId))
+                .fetchOne();
+
+        if(result != null) {
+            return Optional.of(result.toModel());
+        }
+        return Optional.empty();
     }
 }

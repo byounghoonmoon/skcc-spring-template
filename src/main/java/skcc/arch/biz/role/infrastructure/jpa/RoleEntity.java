@@ -34,6 +34,7 @@ public class RoleEntity extends BaseEntity {
     // 생성시 사용
     public static RoleEntity from(Role role) {
         return RoleEntity.builder()
+                .id(role.getId())
                 .roleId(role.getRoleId())
                 .name(role.getName())
                 .build();

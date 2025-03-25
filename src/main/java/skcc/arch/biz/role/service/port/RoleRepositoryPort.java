@@ -12,4 +12,5 @@ public interface RoleRepositoryPort {
     Optional<Role> findById(Long id);
     Page<Role> findByCondition(Pageable pageable, Role search);
     Role update(Role Role);
+    Optional<Role> findByRoleId(String roleId);
 }
