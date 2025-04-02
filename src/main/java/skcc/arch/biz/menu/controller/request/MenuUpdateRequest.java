@@ -4,8 +4,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import skcc.arch.biz.menu.domain.Menu;
+import skcc.arch.biz.role.domain.Role;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Getter
 @Setter
@@ -19,9 +21,10 @@ public class MenuUpdateRequest {
     private boolean isDeleted;
     private LocalDate startDate;
     private LocalDate endDate;
+    private List<String> roleIds;
 
     public Menu toModel() {
-        return Menu.builder()
+        Menu build = Menu.builder()
                 .id(id)
                 .name(name)
                 .parentId(parentId)
@@ -31,6 +34,14 @@ public class MenuUpdateRequest {
                 .startDate(startDate)
                 .endDate(endDate)
                 .build();
+
+        if (roleIds != null && !roleIds.isEmpty()) {
+            for (String roleId : roleIds) {
+                build.getRoleList().add(Role.builder().roleId(roleId).build());
+            }
+        }
+
+        return build;
     }
 
 }

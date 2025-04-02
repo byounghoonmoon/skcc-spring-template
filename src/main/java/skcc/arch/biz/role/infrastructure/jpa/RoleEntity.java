@@ -6,7 +6,11 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import skcc.arch.biz.common.infrastructure.jpa.BaseEntity;
+import skcc.arch.biz.menurole.infrastructure.jpa.MenuRoleEntity;
 import skcc.arch.biz.role.domain.Role;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "roles")
@@ -23,6 +27,9 @@ public class RoleEntity extends BaseEntity {
 
     @Column(name = "name", nullable = false, length = 255)
     private String name;
+
+    @OneToMany(mappedBy = "role", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<MenuRoleEntity> menuRoles = new ArrayList<>();
 
     @Builder
     public RoleEntity(Long id, String roleId, String name) {

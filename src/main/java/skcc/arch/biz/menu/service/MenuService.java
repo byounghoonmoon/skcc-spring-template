@@ -12,6 +12,10 @@ import skcc.arch.biz.common.service.MyCacheService;
 import skcc.arch.biz.menu.controller.port.MenuServicePort;
 import skcc.arch.biz.menu.domain.Menu;
 import skcc.arch.biz.menu.service.port.MenuRepositoryPort;
+import skcc.arch.biz.menurole.domain.MenuRole;
+import skcc.arch.biz.menurole.service.port.MenuRoleRepository;
+import skcc.arch.biz.role.domain.Role;
+import skcc.arch.biz.role.service.port.RoleRepositoryPort;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +27,8 @@ public class MenuService implements MenuServicePort {
 
     private final MenuRepositoryPort menuRepositoryPort;
     private final MyCacheService myCacheService;
+    private final RoleRepositoryPort roleRepositoryPort;
+    private final MenuRoleRepository menuRoleRepository;
 
     @Override
     @Transactional
@@ -59,6 +65,22 @@ public class MenuService implements MenuServicePort {
 
         Menu dbData = menuRepositoryPort.findById(param.getId()).orElseThrow(
                 () -> new CustomException(ErrorCode.NOT_FOUND_ELEMENT));
+
+        // 권한이 존재하는지 확인
+        validRoleExist(param.getRoleList());
+
+        // 기존 메뉴권한맵핑 삭제
+        menuRoleRepository.deleteByMenuId(param.getId());
+
+        // 신규 메뉴권한맵핑 추가
+        for (Role role : param.getRoleList()) {
+            Role dbRole = roleRepositoryPort.findByRoleId(role.getRoleId()).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_ELEMENT));
+            MenuRole menuRoleData = MenuRole.builder()
+                    .menu(dbData)
+                    .role(dbRole)
+                    .build();
+            menuRoleRepository.save(menuRoleData);
+        }
 
         // 업데이트 요청 값이 없을 경우 기존 그대로 유지
         Menu target = Menu.updateMenu(param, dbData);
@@ -97,5 +119,15 @@ public class MenuService implements MenuServicePort {
         }
         // 2-2. 캐시 데이터 반환
         return new ArrayList<>(cacheMenu.values());
+    }
+
+    private void validRoleExist(List<Role> roleList) {
+
+        if (roleList == null || roleList.isEmpty()) {
+            return;
+        }
+        for (Role role : roleList) {
+            roleRepositoryPort.findByRoleId(role.getRoleId()).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_ELEMENT));
+        }
     }
 }

@@ -3,6 +3,7 @@ package skcc.arch.biz.menu.domain;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import skcc.arch.biz.role.domain.Role;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -25,6 +26,7 @@ public class Menu {
     private final LocalDate endDate;
     private final LocalDateTime createdDate;
     private final LocalDateTime lastModifiedDate;
+    private final List<Role> roleList = new ArrayList<>();
 
 
     // 신규 메뉴 생성시 사용

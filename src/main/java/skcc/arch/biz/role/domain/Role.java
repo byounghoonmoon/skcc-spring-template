@@ -2,8 +2,10 @@ package skcc.arch.biz.role.domain;
 
 import lombok.Builder;
 import lombok.Getter;
+import skcc.arch.biz.menurole.domain.MenuRole;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Builder
@@ -13,6 +15,7 @@ public class Role {
     private final String name;
     private final LocalDateTime createdDate;
     private final LocalDateTime lastModifiedDate;
+    private final List<MenuRole> menuRoles;
 
     // 생성규칙은 굳이 만들지 않음 필요하면 프로젝트 특성에 따라 ID 규칙 채번 등을 넣으면 됨
     // 해당 샘플 프로젝트는 ROLE_ID 및 ROLE_NAME 은 필수값으로 가정하였음
