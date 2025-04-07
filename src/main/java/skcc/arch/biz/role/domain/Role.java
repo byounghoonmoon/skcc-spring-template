@@ -6,6 +6,7 @@ import skcc.arch.biz.menurole.domain.MenuRole;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 @Getter
 @Builder
@@ -27,5 +28,17 @@ public class Role {
                 .roleId(param.getRoleId() != null ? param.getRoleId() : dbData.getRoleId())
                 .name(param.getName() != null ? param.getName() : dbData.getName())
                 .build();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Role role = (Role) o;
+        return Objects.equals(id, role.id) && Objects.equals(roleId, role.roleId) && Objects.equals(name, role.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, roleId, name);
     }
 }
