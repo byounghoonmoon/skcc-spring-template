@@ -2,11 +2,14 @@ spring:
 
 ### 데이터베이스 ###
   datasource:
+#    url: jdbc:postgresql://localhost:5432/testdb
+#    username: test
+#    password: test
+#    driver-class-name: org.postgresql.Driver
     driver-class-name: org.h2.Driver
     username: sa
-    url: jdbc:h2:mem:testdb;MODE=MySQL;DB_CLOSE_DELAY=-1
-#    url: jdbc:h2:tcp://localhost/~/test
-
+    #    url: jdbc:h2:mem:testdb;MODE=MySQL;DB_CLOSE_DELAY=-1
+    url: jdbc:h2:tcp://localhost/~/test;MODE=MySQL
 ### 파일  ###
   servlet:
     multipart:
@@ -68,7 +71,7 @@ logging:
 decorator:
   datasource:
     p6spy:
-      enable-logging: false
+      enable-logging: true
 
 
 ### 캐시 저장소 (기본:caffeine)

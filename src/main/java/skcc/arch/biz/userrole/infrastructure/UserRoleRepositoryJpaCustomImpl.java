@@ -29,4 +29,9 @@ public class UserRoleRepositoryJpaCustomImpl implements UserRoleRepositoryPort {
     public void deleteByUserIdAndRoleId(Long userId, Long roleId) {
         repository.deleteByUserIdAndRoleId(userId, roleId);
     }
+
+    @Override
+    public List<UserRole> findByRoleId(Long roleId) {
+        return repository.findByRoleId(roleId).stream().map(UserRoleEntity::toModel).toList();
+    }
 }

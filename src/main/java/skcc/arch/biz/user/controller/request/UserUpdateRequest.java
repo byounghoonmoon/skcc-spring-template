@@ -4,7 +4,6 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
 import skcc.arch.biz.user.domain.User;
-import skcc.arch.biz.user.domain.UserRole;
 import skcc.arch.biz.user.domain.UserStatus;
 
 @Getter
@@ -16,7 +15,6 @@ public class UserUpdateRequest {
     private final String username;
     private final String password;
     private final UserStatus status;
-    private final UserRole role;
 
     public User toModel() {
         return User.builder()
@@ -24,7 +22,6 @@ public class UserUpdateRequest {
                 .username(username)
                 .password(password)
                 .status(status)
-                .role(role)
                 .build();
     }
 }

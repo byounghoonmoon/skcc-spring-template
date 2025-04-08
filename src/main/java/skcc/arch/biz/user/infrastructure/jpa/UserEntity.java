@@ -5,9 +5,13 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import skcc.arch.biz.common.infrastructure.jpa.BaseEntity;
+import skcc.arch.biz.role.infrastructure.jpa.RoleEntity;
 import skcc.arch.biz.user.domain.User;
-import skcc.arch.biz.user.domain.UserRole;
 import skcc.arch.biz.user.domain.UserStatus;
+import skcc.arch.biz.userrole.infrastructure.jpa.UserRoleEntity;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Entity
@@ -25,8 +29,8 @@ public class UserEntity extends BaseEntity {
 
     private String username;
 
-    @Enumerated(EnumType.STRING)
-    private UserRole role;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<UserRoleEntity> userRoles = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
     private UserStatus status;
@@ -37,8 +41,11 @@ public class UserEntity extends BaseEntity {
         userEntity.email = user.getEmail();
         userEntity.password = user.getPassword();
         userEntity.username = user.getUsername();
-        userEntity.role = user.getRole();
         userEntity.status = user.getStatus();
+        user.getRoles().forEach(role -> {
+            RoleEntity roleEntity = RoleEntity.from(role);
+            userEntity.userRoles.add(UserRoleEntity.builder().role(roleEntity).user(userEntity).build());
+        });
         return userEntity;
     }
 
@@ -48,7 +55,6 @@ public class UserEntity extends BaseEntity {
                 .email(email)
                 .password(password)
                 .username(username)
-                .role(role)
                 .status(status)
                 .createdDate(super.getCreatedDate())
                 .lastModifiedDate(super.getLastModifiedDate())

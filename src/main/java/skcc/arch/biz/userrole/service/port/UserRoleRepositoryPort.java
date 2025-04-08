@@ -10,4 +10,5 @@ public interface UserRoleRepositoryPort {
     UserRole save(UserRole userRole);
     List<UserRole> findByUserId(Long userId);
     void deleteByUserIdAndRoleId(Long userId, Long roleId);
+    List<UserRole> findByRoleId(Long roleId);
 }

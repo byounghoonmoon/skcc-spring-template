@@ -1,9 +1,9 @@
 package skcc.arch.biz.small.user.domain;
 
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import skcc.arch.biz.mock.FakePasswordEncoder;
+import skcc.arch.biz.role.domain.Role;
 import skcc.arch.biz.user.controller.request.UserUpdateRequest;
 import skcc.arch.biz.user.domain.User;
 import skcc.arch.biz.user.domain.UserCreate;
@@ -55,8 +55,8 @@ class UserTest {
         User updated = originalUser.updateStatus(userUpdateRequest.getStatus());
 
         //then
-        Assertions.assertThat(updated.getUsername()).isEqualTo(userName);
-        Assertions.assertThat(updated.getStatus()).isEqualTo(userUpdateRequest.getStatus());
+        assertThat(updated.getUsername()).isEqualTo(userName);
+        assertThat(updated.getStatus()).isEqualTo(userUpdateRequest.getStatus());
     }
 
     @Test
@@ -79,24 +79,47 @@ class UserTest {
     @Test
     void 사용자_정보중_일부만_변경() throws Exception {
         //given
-        String newUserName = "홍길순";
-        UserUpdateRequest userUpdateRequest = UserUpdateRequest.builder()
-                .username(newUserName)
-                .build();
-
+        // 사용자
         String userName = "홍길동";
         User originalUser = User.builder()
                 .username(userName)
                 .status(UserStatus.PENDING)
+                .build();
+        // 사용자권한
+        Role role = Role.builder().roleId("NO_CHANGE").build();
+        originalUser.addUserRole(role);
+
+        // 변경대상
+        String newUserName = "홍길순";
+        UserUpdateRequest userUpdateRequest = UserUpdateRequest.builder()
+                .username(newUserName)
                 .build();
 
         //when
         User updatedUser = originalUser.updateUser(userUpdateRequest.toModel(), new FakePasswordEncoder());
 
         //then
-        Assertions.assertThat(updatedUser.getUsername()).isEqualTo(userUpdateRequest.getUsername());
-        Assertions.assertThat(updatedUser.getStatus()).isEqualTo(originalUser.getStatus());
-
-
+        assertThat(updatedUser.getUsername()).isEqualTo(userUpdateRequest.getUsername());
+        assertThat(updatedUser.getStatus()).isEqualTo(originalUser.getStatus());
+        assertThat(updatedUser.getUserRoles().size()).isEqualTo(1);
+        assertThat(updatedUser.getUserRoles().get(0).getRole().getRoleId()).isEqualTo("NO_CHANGE");
     }
+
+    @Test
+    public void 사용자_생성시_기본권한이_부여된다() throws Exception{
+        //given
+        UserCreate userCreate = UserCreate.builder()
+                .username("홍길동")
+                .email("email@sk.com")
+                .password("password123")
+                .build();
+
+        //when
+        User user = User.from(userCreate, new FakePasswordEncoder());
+
+        //then
+        assertThat(user.getUserRoles().size()).isEqualTo(1);
+        assertThat(user.getUserRoles().get(0).getRole()).isEqualTo(Role.defaultRole());
+    }
+
 }

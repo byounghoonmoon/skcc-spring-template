@@ -1,11 +1,12 @@
 package skcc.arch.biz.user.infrastructure.mybatis;
 
 import lombok.*;
-import skcc.arch.biz.user.domain.UserRole;
 import skcc.arch.biz.user.domain.User;
 import skcc.arch.biz.user.domain.UserStatus;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * MyBatis User Dto
@@ -22,7 +23,7 @@ public class UserDto {
     private String email;
     private String password;
     private String username;
-    private UserRole role;
+    private List<skcc.arch.biz.userrole.domain.UserRole> userRoles  = new ArrayList<>();
     private UserStatus status;
     private LocalDateTime createdDate;
     private LocalDateTime lastModifiedDate;
@@ -32,29 +33,34 @@ public class UserDto {
         if (user == null) {
             return null;
         }
-        return UserDto.builder()
+        UserDto userDto = UserDto.builder()
                 .id(user.getId())
                 .email(user.getEmail())
                 .password(user.getPassword())
                 .username(user.getUsername())
-                .role(user.getRole())
+                .userRoles(new ArrayList<>())
                 .status(user.getStatus())
                 .createdDate(user.getCreatedDate())
                 .lastModifiedDate(user.getLastModifiedDate())
                 .build();
+
+        userDto.getUserRoles().addAll(user.getUserRoles());
+
+        return userDto;
     }
 
     public User toModel() {
-        return User.builder()
+        User model = User.builder()
                 .id(id)
                 .email(email)
                 .password(password)
                 .username(username)
-                .role(role)
                 .status(status)
                 .createdDate(createdDate)
                 .lastModifiedDate(lastModifiedDate)
                 .build();
+        model.getUserRoles().addAll(userRoles);
+        return model;
     }
 
 }

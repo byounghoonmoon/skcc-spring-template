@@ -30,6 +30,10 @@ public class Role {
                 .build();
     }
 
+    public static Role defaultRole() {
+        return Role.builder().roleId("DEFAULT").name("기본권한").build();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;

@@ -79,4 +79,9 @@ public class UserRepositoryPortMybatisImpl implements UserRepositoryPort {
     public User updateStatus(User user) {
         return null;
     }
+
+    @Override
+    public Page<User> findAdminUsers(Pageable pageable, List<Long> userIds) {
+        return null;
+    }
 }

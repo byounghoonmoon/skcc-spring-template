@@ -15,4 +15,5 @@ public interface UserRepositoryPort {
     Page<User> findAll(Pageable pageable);
     Page<User> findAdminUsers(Pageable pageable);
     User updateStatus(User user);
+    Page<User> findAdminUsers(Pageable pageable, List<Long> userIds);
 }
